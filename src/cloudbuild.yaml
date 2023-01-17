@@ -1,0 +1,30 @@
+steps:
+
+# Workflow Runner
+
+- name: 'gcr.io/cloud-builders/docker'
+  id: build-sem-runner-image
+  args: [ 'build', '-t', '${_IMAGE_REPO}/sem-${_DEV}-runner:latest', 
+    '-f', 'src/dockerfiles/sem_runner.Dockerfile', '.' ]
+
+- name: 'gcr.io/cloud-builders/docker'
+  id: push-sem-runner-image
+  waitFor: ['build-sem-runner-image']
+  args: ['push', '${_IMAGE_REPO}/sem-${_DEV}-runner:latest']
+
+
+
+
+
+timeout: 900s
+
+logsBucket: 'gs://wx-lty-safari-prod/cloudbuild'
+
+substitutions:
+    _IMAGE_REPO: us-docker.pkg.dev/gcp-wow-rwds-ai-mleops-prod/safari
+    _DEV : prod
+    # _CLUSTER_NAME: safari-prod-gke
+    # _COMPUTE_ZONE: us-central1-a
+    
+
+    # gcloud builds submit --timeout=900s --config ./cloudbuild.yaml . 

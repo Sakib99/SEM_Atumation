@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+plot/
+output/match_dis.csv
+output/match_dx.csv
+output/match_robis.csv
+output/match_sem_bigw.csv
+match_sem_sushi.csv

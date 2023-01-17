@@ -1,0 +1,161 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: sem-pipeline
+  namespace: argoproj
+spec:
+  entrypoint: sem-start
+  serviceAccountName: argo-workflow
+  arguments:
+    parameters:
+    - name: fw-start-date
+      value: '2022-03-07'
+    - name: fw-end-date
+      value: '2022-03-03'
+    - name: dataset_name
+      value: 'DX_dev'
+    - name: env
+      value: 'dev'
+    
+  volumes:
+  - name: google-cloud-key
+    secret:
+      secretName: safari-prod-sa-key
+  templates:
+  - name: sem-start
+    inputs:
+        parameters:
+          - name: fw-start-date
+          - name: fw-end-date
+          - name: dataset_name
+          - name: env
+    dag:
+      tasks:
+        - name: sem-sql-runner
+          templateRef:
+            name: sem-shared
+            template: sem-automation-sql-runner
+          # dependencies:
+          #   - xxxx
+          arguments:
+            parameters:
+              - name: fw-start-date
+                value: '{{inputs.parameters.fw-start-date}}'
+              - name: fw-end-date
+                value: '{{inputs.parameters.fw-end-date}}'
+              - name: dataset_name
+                value: '{{inputs.parameters.dataset_name}}'
+              - name: env
+                value: '{{inputs.parameters.env}}'
+
+        - name: sem-target-runner
+          templateRef:
+            name: sem-shared
+            template: sem-bq-target-runner
+          dependencies:
+            - sem-sql-runner
+          arguments:
+            parameters:
+              - name: fw-start-date
+                value: '{{inputs.parameters.fw-start-date}}'
+              - name: fw-end-date
+                value: '{{inputs.parameters.fw-end-date}}'
+              - name: dataset_name
+                value: '{{inputs.parameters.dataset_name}}'
+              - name: env
+                value: '{{inputs.parameters.env}}'
+
+        - name: sem-control-runner
+          templateRef:
+            name: sem-shared
+            template: sem-bq-control-runner
+          dependencies:
+            - sem-target-runner
+          arguments:
+            parameters:
+              - name: fw-start-date
+                value: '{{inputs.parameters.fw-start-date}}'
+              - name: fw-end-date
+                value: '{{inputs.parameters.fw-end-date}}'
+              - name: dataset_name
+                value: '{{inputs.parameters.dataset_name}}'
+              - name: env
+                value: '{{inputs.parameters.env}}'
+
+        - name: sem-match
+          templateRef:
+            name: sem-shared
+            template: sem-match-runner
+          dependencies:
+            - sem-control-runner
+          arguments:
+            parameters:
+              - name: fw-start-date
+                value: '{{inputs.parameters.fw-start-date}}'
+              - name: fw-end-date
+                value: '{{inputs.parameters.fw-end-date}}'
+              - name: dataset_name
+                value: '{{inputs.parameters.dataset_name}}'
+              - name: env
+                value: '{{inputs.parameters.env}}'
+
+        - name: sem-historical
+          templateRef:
+            name: sem-shared
+            template: sem-historical-runner
+          dependencies:
+            - sem-match
+          arguments:
+            parameters:
+              - name: fw-start-date
+                value: '{{inputs.parameters.fw-start-date}}'
+              - name: fw-end-date
+                value: '{{inputs.parameters.fw-end-date}}'
+              - name: dataset_name
+                value: '{{inputs.parameters.dataset_name}}'
+              - name: env
+                value: '{{inputs.parameters.env}}'
+        - name: sem-calculate
+          templateRef:
+            name: sem-shared
+            template: sem-calculate-runner
+          dependencies:
+            - sem-historical
+          arguments:
+            parameters:
+              - name: fw-start-date
+                value: '{{inputs.parameters.fw-start-date}}'
+              - name: fw-end-date
+                value: '{{inputs.parameters.fw-end-date}}'
+              - name: dataset_name
+                value: '{{inputs.parameters.dataset_name}}'
+              - name: env
+                value: '{{inputs.parameters.env}}'
+        - name: sem-insert
+          templateRef:
+            name: sem-shared
+            template: sem-insert-runner
+          dependencies:
+            - sem-calculate
+          arguments:
+            parameters:
+              - name: fw-start-date
+                value: '{{inputs.parameters.fw-start-date}}'
+              - name: fw-end-date
+                value: '{{inputs.parameters.fw-end-date}}'
+              - name: dataset_name
+                value: '{{inputs.parameters.dataset_name}}'
+              - name: env
+                value: '{{inputs.parameters.env}}'
+
+
+ 
+
+ 
+
+
+  
+
+
+# kubectl apply -f safari-pipeline.yaml --cluster=gke_gcp-wow-rwds-ai-safari-prod_us-central1-a_safari-prod-gke
+

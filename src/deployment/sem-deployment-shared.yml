@@ -1,0 +1,176 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+    name: sem-shared
+    namespace: argoproj
+    
+spec:
+    
+    serviceAccountName: argo-workflow
+    volumes:
+    - name: google-cloud-key
+      secret:
+        secretName: safari-prod-sa-key
+    templates:
+    - name: sem-automation-sql-runner
+      inputs:
+       parameters:
+         - name: fw-start-date
+         - name: fw-end-date
+         - name: dataset_name
+         - name: env
+    
+      container:
+          image: us-docker.pkg.dev/gcp-wow-rwds-ai-mleops-prod/safari/sem-runner:latest
+          imagePullPolicy: Always
+          args: ["sem_sql_runner.py","{{inputs.parameters.fw-start-date}}","{{inputs.parameters.fw-end-date}}","{{inputs.parameters.dataset_name}}","{{inputs.parameters.env}}"]
+          volumeMounts:
+          - mountPath: /var/secrets/google
+            name: google-cloud-key
+          env:
+            - name: ENV
+              value: "dev"
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/secrets/google/key.json
+              
+    - name: sem-bq-target-runner
+      inputs:
+       parameters:
+         - name: fw-start-date
+         - name: fw-end-date
+         - name: dataset_name
+         - name: env
+      
+      container:
+          image: us-docker.pkg.dev/gcp-wow-rwds-ai-mleops-prod/safari/sem-runner:latest
+          imagePullPolicy: Always
+          args: ["sem_bq_target_runner.py","{{inputs.parameters.fw-start-date}}","{{inputs.parameters.fw-end-date}}","{{inputs.parameters.dataset_name}}","{{inputs.parameters.env}}"]
+        
+          volumeMounts:
+          - mountPath: /var/secrets/google
+            name: google-cloud-key
+          env:
+            - name: ENV
+              value: "dev"
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/secrets/google/key.json
+
+
+    - name: sem-bq-control-runner
+      inputs:
+       parameters:
+         - name: fw-start-date
+         - name: fw-end-date
+         - name: dataset_name
+         - name: env
+     
+      container:
+          image: us-docker.pkg.dev/gcp-wow-rwds-ai-mleops-prod/safari/sem-runner:latest
+          imagePullPolicy: Always
+          args: ["sem_bq_control_runner.py","{{inputs.parameters.fw-start-date}}","{{inputs.parameters.fw-end-date}}","{{inputs.parameters.dataset_name}}","{{inputs.parameters.env}}"]
+
+          volumeMounts:
+          - mountPath: /var/secrets/google
+            name: google-cloud-key
+          env:
+            - name: ENV
+              value: "dev"
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/secrets/google/key.json
+
+    - name: sem-match-runner
+      inputs:
+       parameters:
+         - name: fw-start-date
+         - name: fw-end-date
+         - name: dataset_name
+         - name: env
+     
+      container:
+          image: us-docker.pkg.dev/gcp-wow-rwds-ai-mleops-prod/safari/sem-runner:latest
+          
+          imagePullPolicy: Always
+          args: ["sem_match_runner.py","{{inputs.parameters.fw-start-date}}","{{inputs.parameters.fw-end-date}}","{{inputs.parameters.dataset_name}}","{{inputs.parameters.env}}"]
+
+          volumeMounts:
+          - mountPath: /var/secrets/google
+            name: google-cloud-key
+          env:
+            - name: ENV
+              value: "dev"
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/secrets/google/key.json
+
+
+    - name: sem-calculate-runner
+      inputs:
+       parameters:
+         - name: fw-start-date
+         - name: fw-end-date
+         - name: dataset_name
+         - name: env
+      
+      container:
+          image: us-docker.pkg.dev/gcp-wow-rwds-ai-mleops-prod/safari/sem-runner:latest
+          imagePullPolicy: Always
+          args: ["sem_calculate.py","{{inputs.parameters.fw-start-date}}","{{inputs.parameters.fw-end-date}}","{{inputs.parameters.dataset_name}}","{{inputs.parameters.env}}"]
+
+          volumeMounts:
+          - mountPath: /var/secrets/google
+            name: google-cloud-key
+          env:
+            - name: ENV
+              value: "dev"
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/secrets/google/key.json
+
+    - name: sem-historical-runner
+      inputs:
+       parameters:
+         - name: fw-start-date
+         - name: fw-end-date
+         - name: env
+     
+      container:
+          image: us-docker.pkg.dev/gcp-wow-rwds-ai-mleops-prod/safari/sem-runner:latest
+          imagePullPolicy: Always
+          args: ["sem_historical_automation.py","{{inputs.parameters.fw-start-date}}","{{inputs.parameters.fw-end-date}}","{{inputs.parameters.dataset_name}}","{{inputs.parameters.env}}"]
+
+          volumeMounts:
+          - mountPath: /var/secrets/google
+            name: google-cloud-key
+          env:
+            - name: ENV
+              value: "dev"
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/secrets/google/key.json
+
+
+    - name: sem-insert-runner
+      inputs:
+       parameters:
+         - name: fw-start-date
+         - name: fw-end-date
+         - name: dataset_name
+         - name: env
+      
+      container:
+          image: us-docker.pkg.dev/gcp-wow-rwds-ai-mleops-prod/safari/sem-runner:latest
+          imagePullPolicy: Always
+          args: ["sem_insert.py","{{inputs.parameters.fw-start-date}}","{{inputs.parameters.fw-end-date}}","{{inputs.parameters.dataset_name}}","{{inputs.parameters.env}}"]
+
+          volumeMounts:
+          - mountPath: /var/secrets/google
+            name: google-cloud-key
+          env:
+            - name: ENV
+              value: "dev"
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/secrets/google/key.json
+
+   
+  
+         
+
+
+   
