@@ -1,7 +1,7 @@
 
 with match_rate as (
     select ref_dt, match_rate
-        from `gcp-wow-rwds-ai-safari-prod.DX.sem_match_rate`
+        from `'
         where advertiser = 'Supermarket_Search'
         and ref_dt = date('{start_dt}')
 ),
@@ -14,7 +14,7 @@ btl_inc_sales as (
     select  crn,
             date_trunc(fw_start_date, isoweek) as ref_dt,
             sum(inc_sales) as inc_sales
-        from `gcp-wow-rwds-ai-safari-prod.Attribution_Safari_GT_output.Safari_crn_level_game_theory_output_safari_full_promo_halo_post_current`
+        from `t`
         where date_trunc(fw_start_date, isoweek) = date('{start_dt}')
         group by 1,2
 )
