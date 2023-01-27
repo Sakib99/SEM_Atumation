@@ -18,13 +18,13 @@ steps:
 
 timeout: 900s
 
-logsBucket: 'gs://wx-lty-safari-prod/cloudbuild'
+logsBucket:
 
 substitutions:
-    _IMAGE_REPO: us-docker.pkg.dev/gcp-wow-rwds-ai-mleops-prod/safari
+    _IMAGE_REPO: prod/saf
     _DEV : prod
-    # _CLUSTER_NAME: safari-prod-gke
-    # _COMPUTE_ZONE: us-central1-a
+    # _CLUSTER_NAME: sdf
+    # _COMPUTE_ZONE: us-central1-p
     
 
     # gcloud builds submit --timeout=900s --config ./cloudbuild.yaml . 
