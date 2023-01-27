@@ -22,7 +22,7 @@ cvm as (
     select customer_value_model.crn
          ,Date_trunc(customer_value_model.pw_end_date, isoweek) as ref_dt
          ,min(customer_value_model.macro_segment_curr) as cvm
-    from `gcp-wow-rwds-ai-safari-prod.wdp_tables.customer_value_model` customer_value_model
+ 
     group by 1,2
     order by 1,2
 )
@@ -49,9 +49,7 @@ spend_26wk as (
     select lylty_card_detail.crn,
            base.ref_dt as ref_dt, -- removed case clause
            sum(article_sales_summary.tot_net_excld_gst)/26 as spend_26wk
-    from `gcp-wow-rwds-ai-safari-prod.wdp_tables.article_sales_summary` article_sales_summary
-    left join `gcp-wow-rwds-ai-safari-prod.wdp_tables.lylty_card_detail` lylty_card_detail
-    on article_sales_summary.lylty_card_nbr = lylty_card_detail.lylty_card_nbr
+    
     inner join base
     on base.crn = lylty_card_detail.crn
     where article_sales_summary.lylty_card_nbr != '0'
