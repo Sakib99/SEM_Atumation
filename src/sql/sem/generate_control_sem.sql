@@ -6,7 +6,7 @@ with base0 as (
     union distinct 
     
     select  Date('{start_dt}') as ref_dt, crn
-        from `gcp-wow-rwds-ai-safari-prod.Attribution_Safari_GT_output.Safari_crn_level_game_theory_output_safari_full_promo_halo_post_current`
+        from ``
         where date_trunc(fw_start_date, isoweek) between date('{start_dt}') and date('{end_dt}')
         group by 1,2
 )
@@ -20,10 +20,10 @@ base as (
                  else 0
              end
          ) as online_spend_count -- Why is this being calculated? It's not getting used anywhere
-    from `gcp-wow-rwds-ai-safari-prod.wdp_tables.article_sales_summary` article_sales_summary
-    left join `gcp-wow-rwds-ai-safari-prod.wdp_tables.lylty_card_detail` lylty_card_detail 
+    from `` article_sales_summary
+    left join `` lylty_card_detail 
     on article_sales_summary.lylty_card_nbr = lylty_card_detail.lylty_card_nbr
-    inner join `gcp-wow-rwds-ai-safari-prod.wdp_tables.control_group` control_group
+    inner join `p` control_group
     on lylty_card_detail.crn = control_group.crn
     and article_sales_summary.start_txn_date between control_group.control_start_date and control_group.control_end_date
     left join base0
@@ -54,8 +54,8 @@ spend_8wk as (
     select lylty_card_detail.crn
          , base.ref_dt as ref_dt -- removed case clause
          ,sum(article_sales_summary.tot_net_excld_gst)/8 as spend_8wk
-    from `gcp-wow-rwds-ai-safari-prod.wdp_tables.article_sales_summary` article_sales_summary
-    left join `gcp-wow-rwds-ai-safari-prod.wdp_tables.lylty_card_detail` lylty_card_detail
+    from `` article_sales_summary
+    left join `` lylty_card_detail
     on article_sales_summary.lylty_card_nbr = lylty_card_detail.lylty_card_nbr
     inner join base
     on base.crn = lylty_card_detail.crn
@@ -72,8 +72,8 @@ spend_26wk as (
     select lylty_card_detail.crn
         ,base.ref_dt as ref_dt -- removed case clause
         ,sum(article_sales_summary.tot_net_excld_gst)/26 as spend_26wk
-    from `gcp-wow-rwds-ai-safari-prod.wdp_tables.article_sales_summary` article_sales_summary
-    left join `gcp-wow-rwds-ai-safari-prod.wdp_tables.lylty_card_detail` lylty_card_detail
+    from `` article_sales_summary
+    left join `` lylty_card_detail
     on article_sales_summary.lylty_card_nbr = lylty_card_detail.lylty_card_nbr
     inner join base
     on article_sales_summary.start_txn_date between DATE_SUB(base.ref_dt, INTERVAL 182 DAY) and DATE(base.ref_dt)
