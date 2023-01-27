@@ -10,7 +10,7 @@ spec:
     volumes:
     - name: google-cloud-key
       secret:
-        secretName: safari-prod-sa-key
+        secretName:
     templates:
     - name: sem-automation-sql-runner
       inputs:
@@ -21,7 +21,7 @@ spec:
          - name: env
     
       container:
-          image: us-docker.pkg.dev/gcp-wow-rwds-ai-mleops-prod/safari/sem-runner:latest
+          image:
           imagePullPolicy: Always
           args: ["sem_sql_runner.py","{{inputs.parameters.fw-start-date}}","{{inputs.parameters.fw-end-date}}","{{inputs.parameters.dataset_name}}","{{inputs.parameters.env}}"]
           volumeMounts:
@@ -42,7 +42,7 @@ spec:
          - name: env
       
       container:
-          image: us-docker.pkg.dev/gcp-wow-rwds-ai-mleops-prod/safari/sem-runner:latest
+          image: 
           imagePullPolicy: Always
           args: ["sem_bq_target_runner.py","{{inputs.parameters.fw-start-date}}","{{inputs.parameters.fw-end-date}}","{{inputs.parameters.dataset_name}}","{{inputs.parameters.env}}"]
         
@@ -53,7 +53,7 @@ spec:
             - name: ENV
               value: "dev"
             - name: GOOGLE_APPLICATION_CREDENTIALS
-              value: /var/secrets/google/key.json
+              value: 
 
 
     - name: sem-bq-control-runner
@@ -65,7 +65,7 @@ spec:
          - name: env
      
       container:
-          image: us-docker.pkg.dev/gcp-wow-rwds-ai-mleops-prod/safari/sem-runner:latest
+          image: 
           imagePullPolicy: Always
           args: ["sem_bq_control_runner.py","{{inputs.parameters.fw-start-date}}","{{inputs.parameters.fw-end-date}}","{{inputs.parameters.dataset_name}}","{{inputs.parameters.env}}"]
 
@@ -76,7 +76,7 @@ spec:
             - name: ENV
               value: "dev"
             - name: GOOGLE_APPLICATION_CREDENTIALS
-              value: /var/secrets/google/key.json
+              value: 
 
     - name: sem-match-runner
       inputs:
@@ -87,7 +87,7 @@ spec:
          - name: env
      
       container:
-          image: us-docker.pkg.dev/gcp-wow-rwds-ai-mleops-prod/safari/sem-runner:latest
+          image: 
           
           imagePullPolicy: Always
           args: ["sem_match_runner.py","{{inputs.parameters.fw-start-date}}","{{inputs.parameters.fw-end-date}}","{{inputs.parameters.dataset_name}}","{{inputs.parameters.env}}"]
@@ -99,7 +99,7 @@ spec:
             - name: ENV
               value: "dev"
             - name: GOOGLE_APPLICATION_CREDENTIALS
-              value: /var/secrets/google/key.json
+              value:
 
 
     - name: sem-calculate-runner
@@ -111,7 +111,7 @@ spec:
          - name: env
       
       container:
-          image: us-docker.pkg.dev/gcp-wow-rwds-ai-mleops-prod/safari/sem-runner:latest
+          image:
           imagePullPolicy: Always
           args: ["sem_calculate.py","{{inputs.parameters.fw-start-date}}","{{inputs.parameters.fw-end-date}}","{{inputs.parameters.dataset_name}}","{{inputs.parameters.env}}"]
 
@@ -132,7 +132,7 @@ spec:
          - name: env
      
       container:
-          image: us-docker.pkg.dev/gcp-wow-rwds-ai-mleops-prod/safari/sem-runner:latest
+          image: 
           imagePullPolicy: Always
           args: ["sem_historical_automation.py","{{inputs.parameters.fw-start-date}}","{{inputs.parameters.fw-end-date}}","{{inputs.parameters.dataset_name}}","{{inputs.parameters.env}}"]
 
@@ -155,7 +155,7 @@ spec:
          - name: env
       
       container:
-          image: us-docker.pkg.dev/gcp-wow-rwds-ai-mleops-prod/safari/sem-runner:latest
+          image:
           imagePullPolicy: Always
           args: ["sem_insert.py","{{inputs.parameters.fw-start-date}}","{{inputs.parameters.fw-end-date}}","{{inputs.parameters.dataset_name}}","{{inputs.parameters.env}}"]
 
