@@ -17,8 +17,8 @@ SELECT * from
              end
              ) as offline_spend
          ,sum(article_sales_summary.tot_net_excld_gst) as total_spend
-    from gcp-wow-rwds-ai-safari-prod.wdp_tables.article_sales_summary
-    left join gcp-wow-rwds-ai-safari-prod.wdp_tables.lylty_card_detail
+    
+   
     on article_sales_summary.lylty_card_nbr = lylty_card_detail.lylty_card_nbr
     where article_sales_summary.start_txn_date between date('{start_dt}') and date('{end_dt}')
     and article_sales_summary.lylty_card_nbr not in ('0','-1')
