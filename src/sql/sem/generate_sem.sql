@@ -26,7 +26,7 @@ SELECT productGroupId, productGroup
 drop table if exists `{dam-project}.{dam-dataset}.sem_productAdvertised`;
 create table `{dam-project}.{dam-dataset}.sem_productAdvertised` as
 (
---     SELECT * from `wx-bq-poc.digital_attribution_modelling.sy_sem_productAdvertised`
+--     SELECT * from ``
 select (REPLACE(concat(productCategoryLevel1,productCategoryLevel2,productCategoryLevel3,productCategoryLevel4),'Everything else','')) as pc
         , (REPLACE(concat(productTypeLevel1,productTypeLevel2,productTypeLevel3), 'Everything else','')) as pt
         , productId
@@ -100,7 +100,7 @@ create table `{dam-project}.{dam-dataset}.sem_prod_clk` as
     inner join 
     (
         select distinct * 
-        from `gcp-wow-rwds-ai-mlt-evs-prod.event_store.googlex_userid_crn_map_window`
+        from ``
     ) b
     on a.user_id = b.user_id
         and a.event_time between b.effective_time and b.expiry_time
