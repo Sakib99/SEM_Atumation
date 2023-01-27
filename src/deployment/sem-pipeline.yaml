@@ -2,10 +2,10 @@ apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
   name: sem-pipeline
-  namespace: argoproj
+  namespace: 
 spec:
   entrypoint: sem-start
-  serviceAccountName: argo-workflow
+  serviceAccountName: 
   arguments:
     parameters:
     - name: fw-start-date
@@ -13,14 +13,14 @@ spec:
     - name: fw-end-date
       value: '2022-03-03'
     - name: dataset_name
-      value: 'DX_dev'
+      value: 
     - name: env
       value: 'dev'
     
   volumes:
-  - name: google-cloud-key
+  - name:
     secret:
-      secretName: safari-prod-sa-key
+      secretName: 
   templates:
   - name: sem-start
     inputs:
@@ -154,8 +154,4 @@ spec:
  
 
 
-  
-
-
-# kubectl apply -f safari-pipeline.yaml --cluster=gke_gcp-wow-rwds-ai-safari-prod_us-central1-a_safari-prod-gke
-
+ 
